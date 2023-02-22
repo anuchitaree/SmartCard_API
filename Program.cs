@@ -1,3 +1,5 @@
+using SmartCard_API.Interfaces;
+using SmartCard_API.Services;
 using SmartCard_API.Workers;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -19,12 +21,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-//var connectionFolder = builder.Configuration["ConnectionFolder"];
-//if (!File.Exists(connectionFolder))
-//    Directory.CreateDirectory(connectionFolder);
-
 //// Add services to the container.
 //builder.Services.AddHostedService<ConfirmWorker>();
+
+builder.Services.AddTransient<ISystemIO, SystemIO>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

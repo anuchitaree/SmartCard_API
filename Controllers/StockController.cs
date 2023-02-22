@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartCard_API.Models;
 using SmartCart_API.Models;
 
 namespace SmartCart_API.Controllers
@@ -11,8 +12,12 @@ namespace SmartCart_API.Controllers
         [HttpPost("receive")]
         public ActionResult ReceiveFromSmartCard([FromBody] PartNumber partNumber)
         {
-
-            return Ok(partNumber);
+            var okresult = new StatusModel()
+            {
+                Status = "ok",
+                Detail = "",
+            };
+            return Ok(okresult); 
         }
     }
 }

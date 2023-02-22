@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SmartCard_API.Interfaces;
+using SmartCard_API.Models;
 using SmartCart_API.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,9 +12,11 @@ namespace SmartCartTool_API.Controllers
     public class SmartCardController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        public SmartCardController(IConfiguration configuration)
+        private readonly ISystemIO _systemIO;
+        public SmartCardController(IConfiguration configuration,ISystemIO systemIO)
         {
             _configuration = configuration;
+            _systemIO = systemIO;
         }
 
         // POST api/<SmartCardController>
@@ -31,12 +35,27 @@ namespace SmartCartTool_API.Controllers
 
             path += "\\partnumber.txt";
 
+            if (_systemIO.IsFileExist(path))
+            {
+                var ngresult = new StatusModel()
+                {
+                    Status="ng",
+                    Detail="busy",
+                };
+                return Ok(ngresult);
+            }
+
             using (StreamWriter writetext = new StreamWriter(path))
             {
                 writetext.Write($"{partnumber.PartNoSubAssy},{partnumber.LotId},{partnumber.TimeStamp}");
             }
 
-            return Ok(partnumber);
+            var okresult = new StatusModel()
+            {
+                Status = "ok",
+                Detail = "",
+            };
+            return Ok(okresult);
 
         }
 
