@@ -22,7 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 //// Add services to the container.
-//builder.Services.AddHostedService<ConfirmWorker>();
+builder.Services.AddHostedService<ConfirmWorker>();
 
 builder.Services.AddTransient<ISystemIO, SystemIO>();
 

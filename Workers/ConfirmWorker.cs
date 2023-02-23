@@ -30,7 +30,9 @@ namespace SmartCard_API.Workers
         public override Task StartAsync(CancellationToken cancellationToken)
         {
             client = new HttpClient();
-            client.BaseAddress = new Uri($"{hostSettingServices.Url}/api/v1/");
+            //client.BaseAddress = new Uri(hostSettingServices.Url);
+            client.BaseAddress = new Uri("https://55a3-1-47-134-10.ap.ngrok.io");
+
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             return base.StartAsync(cancellationToken);
@@ -45,7 +47,7 @@ namespace SmartCard_API.Workers
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             await Task.Delay(5000);
-            return;
+            
             while (!stoppingToken.IsCancellationRequested)
             {
            
@@ -53,8 +55,8 @@ namespace SmartCard_API.Workers
                 {
                     var data = new PartNumber()
                     {
-                        PartNoSubAssy = "TG660145-7896",
-                        LotId = "00001",
+                        PartNoSubAssy = "TG660145-789",
+                        LotId = 1,
                         TimeStamp = "2022-04-03T13:40:00",
                     };
 
@@ -63,7 +65,7 @@ namespace SmartCard_API.Workers
 
                     StringContent httpcontent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-                    string uri = "/api/v1/stock/receive";
+                    string uri = "/api/v1/end_write_sub_assy";
 
                     var timeRecordResp = await client.PostAsync(uri, httpcontent);
 
