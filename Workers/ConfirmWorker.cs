@@ -30,8 +30,8 @@ namespace SmartCard_API.Workers
         public override Task StartAsync(CancellationToken cancellationToken)
         {
             client = new HttpClient();
-            //client.BaseAddress = new Uri(hostSettingServices.Url);
-            client.BaseAddress = new Uri("https://55a3-1-47-134-10.ap.ngrok.io");
+            client.BaseAddress = new Uri(hostSettingServices.Url);
+            //client.BaseAddress = new Uri("https://55a3-1-47-134-10.ap.ngrok.io");
 
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

@@ -5,11 +5,11 @@ using SmartCart_API.Models;
 
 namespace SmartCart_API.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/")]
     [ApiController]
     public class StockController : ControllerBase
     {
-        [HttpPost("receive")]
+        [HttpPost("end_write_sub_assy")]
         public ActionResult ReceiveFromSmartCard([FromBody] PartNumber partNumber)
         {
             var okresult = new StatusModel()
