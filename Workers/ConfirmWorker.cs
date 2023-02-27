@@ -22,7 +22,7 @@ namespace SmartCard_API.Workers
             client = null!;
             hostSettingServices = new HostSettingServices()
             {
-                Url = Configuration["HostSettingServices:Url"],
+                Url = Configuration["HostSettingServices:Url"]!,
             };
 
         }

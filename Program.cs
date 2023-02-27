@@ -4,25 +4,29 @@ using SmartCard_API.Workers;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-var builder = WebApplication.CreateBuilder(args);
+//var builder = WebApplication.CreateBuilder(args);
 
 
 
 //---// For Running on Windows services
-//var webApplicationOptions = new WebApplicationOptions()
-//{
-//    Args = args,
-//    ContentRootPath = AppContext.BaseDirectory,
-//    ApplicationName = System.Diagnostics.Process.GetCurrentProcess().ProcessName
-//};
-//var builder = WebApplication.CreateBuilder(webApplicationOptions);
-//builder.Host.UseWindowsService();
+var webApplicationOptions = new WebApplicationOptions()
+{
+    Args = args,
+    ContentRootPath = AppContext.BaseDirectory,
+    ApplicationName = System.Diagnostics.Process.GetCurrentProcess().ProcessName
+};
+var builder = WebApplication.CreateBuilder(webApplicationOptions);
+builder.Host.UseWindowsService();
 
 
+var path = builder.Configuration["ConnectionFolder"];
+
+if (!Directory.Exists(path))
+    Directory.CreateDirectory(path!);
 
 
 //// Add services to the container.
-builder.Services.AddHostedService<ConfirmWorker>();
+//builder.Services.AddHostedService<ConfirmWorker>();
 
 builder.Services.AddTransient<ISystemIO, SystemIO>();
 
@@ -53,7 +57,7 @@ if (app.Environment.IsDevelopment())
 if (!app.Environment.IsDevelopment())
 {
 
-    builder.WebHost.UseUrls(builder.Configuration["UseUrls"]);
+    builder.WebHost.UseUrls(builder.Configuration["UseUrls"]!);
 
 }
 

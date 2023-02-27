@@ -31,7 +31,7 @@ namespace SmartCartTool_API.Controllers
             var path = _configuration["ConnectionFolder"];
 
             if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+                Directory.CreateDirectory(path!);
 
             path += "\\partnumber.txt";
 

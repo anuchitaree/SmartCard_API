@@ -1,4 +1,5 @@
 ﻿using SmartCard_API.Interfaces;
+using System.IO.MemoryMappedFiles;
 
 namespace SmartCard_API.Services
 {
@@ -12,5 +13,8 @@ namespace SmartCard_API.Services
             }
             return false;
         }
+
+
+
     }
 }
