@@ -45,6 +45,17 @@ namespace SmartCartTool_API.Controllers
                 return Ok(ngresult);
             }
 
+            if (partnumber.PartNoSubAssy.Length != 12 && partnumber.TimeStamp.Length != 19)
+            {
+                var ng1 = new StatusModel()
+                {
+                    Status = "ng",
+                    Detail = "PartNoSubAssy is not equal 12 characters or TimeStamp is not equal 19 charactors",
+                };
+                return Ok(ng1);
+            }
+
+
             using (StreamWriter writetext = new StreamWriter(path))
             {
                 writetext.Write($"{partnumber.PartNoSubAssy},{partnumber.LotId},{partnumber.TimeStamp}");
