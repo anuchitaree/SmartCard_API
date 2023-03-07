@@ -1,0 +1,2 @@
+﻿
+dotnet ef migrations add InitialCreate --context SmartCard_API.data.NpgContext

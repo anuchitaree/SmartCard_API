@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SmartCard_API.Data;
 using SmartCard_API.Interfaces;
 using SmartCard_API.Models;
 using SmartCart_API.Models;
@@ -13,61 +15,85 @@ namespace SmartCartTool_API.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly ISystemIO _systemIO;
-        public SmartCardController(IConfiguration configuration,ISystemIO systemIO)
+        private readonly NpgContext db;
+        public SmartCardController(IConfiguration configuration, ISystemIO systemIO, NpgContext npgContext)
         {
             _configuration = configuration;
             _systemIO = systemIO;
+            db = npgContext;
         }
 
         // POST api/<SmartCardController>
         //https://localhost:7135/api/v1/SmartCard/partnumber
         [HttpPost("partnumber")]
-        public ActionResult PostPartNumber([FromBody] PartNumber partnumber)
+        public async Task<ActionResult> PostPartNumber([FromBody] PartNumber partnumber)
         {
 
-            if (partnumber == null) return BadRequest();
-
-
-            var path = _configuration["ConnectionFolder"];
-
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path!);
-
-            path += "\\partnumber.txt";
-
-            if (_systemIO.IsFileExist(path))
+            try
             {
-                var ngresult = new StatusModel()
+
+                if (partnumber == null) return BadRequest();
+
+
+                //=== no master part ==//
+                var exitsmaster = await db.Smartcards.Where(x => x.Partnumber == partnumber.PartNoSubAssy).ToListAsync();
+                if (exitsmaster.Count == 0)
                 {
-                    Status="ng",
-                    Detail="busy",
-                };
-                return Ok(ngresult);
-            }
+                    var notfound = new StatusModel()
+                    {
+                        Status = "ng",
+                        Detail = "not_found_master_part",
+                    };
+                    return Ok(notfound);
+                }
 
-            if (partnumber.PartNoSubAssy.Length != 12 && partnumber.TimeStamp.Length != 19)
-            {
-                var ng1 = new StatusModel()
+
+
+                //== busy ==//
+                var path = _configuration["ConnectionFolder"];
+
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path!);
+
+                path += "\\partnumber.txt";
+
+                if (_systemIO.IsFileExist(path))
                 {
-                    Status = "ng",
-                    Detail = "PartNoSubAssy is not equal 12 characters or TimeStamp is not equal 19 charactors",
+                    var ngresult = new StatusModel()
+                    {
+                        Status = "ng",
+                        Detail = "busy",
+                    };
+                    return Ok(ngresult);
+                }
+
+                if (partnumber.PartNoSubAssy.Length != 12 && partnumber.TimeStamp.Length != 19)
+                {
+                    var ng1 = new StatusModel()
+                    {
+                        Status = "ng",
+                        Detail = "PartNoSubAssy is not equal 12 characters or TimeStamp is not equal 19 charactors",
+                    };
+                    return Ok(ng1);
+                }
+
+                //===  OK ==//
+                using (StreamWriter writetext = new StreamWriter(path))
+                {
+                    writetext.Write($"{partnumber.PartNoSubAssy},{partnumber.LotId},{partnumber.TimeStamp}");
+                }
+
+                var okresult = new StatusModel()
+                {
+                    Status = "ok",
+                    Detail = "",
                 };
-                return Ok(ng1);
+                return Ok(okresult);
             }
-
-
-            using (StreamWriter writetext = new StreamWriter(path))
+            catch (Exception ex)
             {
-                writetext.Write($"{partnumber.PartNoSubAssy},{partnumber.LotId},{partnumber.TimeStamp}");
+                return Ok(new { Status="ng", Detail = ex.Message });
             }
-
-            var okresult = new StatusModel()
-            {
-                Status = "ok",
-                Detail = "",
-            };
-            return Ok(okresult);
-
         }
 
 

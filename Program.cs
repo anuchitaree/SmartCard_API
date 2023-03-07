@@ -1,22 +1,23 @@
+using Microsoft.EntityFrameworkCore;
+using SmartCard_API.Data;
 using SmartCard_API.Interfaces;
 using SmartCard_API.Services;
-using SmartCard_API.Workers;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-//var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 
 
 //---// For Running on Windows services
-var webApplicationOptions = new WebApplicationOptions()
-{
-    Args = args,
-    ContentRootPath = AppContext.BaseDirectory,
-    ApplicationName = System.Diagnostics.Process.GetCurrentProcess().ProcessName
-};
-var builder = WebApplication.CreateBuilder(webApplicationOptions);
-builder.Host.UseWindowsService();
+//var webApplicationOptions = new WebApplicationOptions()
+//{
+//    Args = args,
+//    ContentRootPath = AppContext.BaseDirectory,
+//    ApplicationName = System.Diagnostics.Process.GetCurrentProcess().ProcessName
+//};
+//var builder = WebApplication.CreateBuilder(webApplicationOptions);
+//builder.Host.UseWindowsService();
 
 
 var path = builder.Configuration["ConnectionFolder"];
@@ -26,7 +27,17 @@ if (!Directory.Exists(path))
 
 
 //// Add services to the container.
-//builder.Services.AddHostedService<ConfirmWorker>();
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+// PostgreSQL  NpgContext
+string connection = builder.Configuration["PostgreSqlConnectionStrings:DefaultConnection"]!;
+builder.Services.AddDbContext<NpgContext>(option =>
+option.UseNpgsql(connection, builder =>
+{
+    builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+}));
+
+
 
 builder.Services.AddTransient<ISystemIO, SystemIO>();
 

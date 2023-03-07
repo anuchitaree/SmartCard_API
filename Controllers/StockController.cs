@@ -12,6 +12,7 @@ namespace SmartCart_API.Controllers
         [HttpPost("end_write_sub_assy")]
         public ActionResult End_write_sub_assy([FromBody] NormalReturn partNumber)
         {
+
             var okresult = new StatusModel()
             {
                 Status = "ok",
