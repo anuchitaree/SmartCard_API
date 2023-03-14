@@ -5,19 +5,19 @@ using SmartCard_API.Services;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-var builder = WebApplication.CreateBuilder(args);
+//var builder = WebApplication.CreateBuilder(args);
 
 
 
 //---// For Running on Windows services
-//var webApplicationOptions = new WebApplicationOptions()
-//{
-//    Args = args,
-//    ContentRootPath = AppContext.BaseDirectory,
-//    ApplicationName = System.Diagnostics.Process.GetCurrentProcess().ProcessName
-//};
-//var builder = WebApplication.CreateBuilder(webApplicationOptions);
-//builder.Host.UseWindowsService();
+var webApplicationOptions = new WebApplicationOptions()
+{
+    Args = args,
+    ContentRootPath = AppContext.BaseDirectory,
+    ApplicationName = System.Diagnostics.Process.GetCurrentProcess().ProcessName
+};
+var builder = WebApplication.CreateBuilder(webApplicationOptions);
+builder.Host.UseWindowsService();
 
 
 var path = builder.Configuration["ConnectionFolder"];

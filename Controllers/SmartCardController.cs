@@ -32,6 +32,8 @@ namespace SmartCartTool_API.Controllers
             try
             {
 
+                var aaa = db.Database.CanConnect();
+
                 if (partnumber == null) return BadRequest();
 
 
