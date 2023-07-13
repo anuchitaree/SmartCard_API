@@ -8,7 +8,7 @@ namespace SmartCard_API.Data
 
         public DbSet<SmartCard> Smartcards { get; set; } = null!;
 
-
+        public DbSet<ReceivedLog> ReceivedLogs { get; set; } = null!;
 
         public NpgContext(DbContextOptions<NpgContext> options)
           : base(options)

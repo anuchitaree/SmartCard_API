@@ -1,2 +1,7 @@
 ﻿
 dotnet ef migrations add InitialCreate --context SmartCard_API.data.NpgContext
+
+dotnet ef migrations add ReceivedLog --context SmartCard_API.data.NpgContext
+
+
+dotnet ef database update --context SmartCard_API.data.NpgContext

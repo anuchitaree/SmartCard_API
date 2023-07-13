@@ -85,6 +85,19 @@ namespace SmartCartTool_API.Controllers
                     writetext.Write($"{partnumber.PartNoSubAssy},{partnumber.LotId},{partnumber.TimeStamp}");
                 }
 
+                // Temporary for test //
+                var recordReceived = new ReceivedLog()
+                {
+                    PartNoSubAssy = partnumber.PartNoSubAssy,
+                    LotId = partnumber.LotId,
+                    TimeStamp = partnumber.TimeStamp,
+                    StockSent =true,
+                };
+                await db.ReceivedLogs.AddRangeAsync(recordReceived);
+                await db.SaveChangesAsync();
+                // Temporary for test //
+
+
                 var okresult = new StatusModel()
                 {
                     Status = "ok",

@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SmartCard_API.Data;
 using SmartCard_API.Models;
-using SmartCart_API.Models;
 
 namespace SmartCart_API.Controllers
 {
@@ -9,16 +9,38 @@ namespace SmartCart_API.Controllers
     [ApiController]
     public class StockController : ControllerBase
     {
-        [HttpPost("end_write_sub_assy")]
-        public ActionResult End_write_sub_assy([FromBody] NormalReturn partNumber)
+        private readonly NpgContext db;
+
+        public StockController(NpgContext npgContext)
         {
+            db = npgContext;
+
+        }
+
+        [HttpPost("end_write_sub_assy")]
+        public async Task<ActionResult> End_write_sub_assy([FromBody] NormalReturn partNumber)
+        {
+
+            var existing = await db.ReceivedLogs.Where(p => p.PartNoSubAssy == partNumber.PartNoSubAssy)
+                .Where(t => t.TimeStamp == partNumber.TimeStamp).ToListAsync();
+            if (existing.Count() > 0)
+            {
+                foreach (var item in existing)
+                {
+                    item.StockReceived = true;
+                };
+                await db.SaveChangesAsync();
+
+            }
+
+
 
             var okresult = new StatusModel()
             {
                 Status = "ok",
                 Detail = "",
             };
-            return Ok(okresult); 
+            return Ok(okresult);
         }
 
 
